@@ -4,10 +4,8 @@ Easy object is the middleware and the controller of the others modules.
 """
 
 import url
-import types
 import connector
-
-
+from sqltypes import types
 
 
 class Easy(object):
@@ -28,7 +26,6 @@ class Easy(object):
 
     def create(self):
         pass
-
 
 
 class Table(object):

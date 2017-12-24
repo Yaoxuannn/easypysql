@@ -13,7 +13,7 @@ class Field(object):
         if isinstance(sqltype, SQLType):
             self.sqltype = sqltype
         else:
-            raise ValueError("Expected SQLType, got %s" % sqltype.__class__.__name__)
+            raise ValueError("Expected SQLType[Integer|String|Time|Blob], got %s" % sqltype.__class__.__name__)
         self._type = sqltype.python_type
         self.raw_data = None
 
@@ -34,9 +34,11 @@ class Integer(SQLType):
 
     __name__ = 'integer'
 
-    def __init__(self):
+    def __init__(self, real=False):
         super(Integer, self).__init__()
         self._type = int
+        if real:
+            self._type = float
 
 
 class String(SQLType):
