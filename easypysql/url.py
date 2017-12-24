@@ -15,6 +15,15 @@ class URL(object):
             self.port = None
         self.database = database
 
+    # def get_url(self):
+    #     items = vars(self)
+    #     for k in items.keys():
+    #         if items.get(k) is None:
+    #             items.pop()
+    #     pass
+
+
+
 
 def parse_url(url):
     pattern = re.compile(r"""

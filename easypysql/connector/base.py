@@ -46,6 +46,18 @@ class BaseConnector:
         """
         pass
 
+    def raw_execute(self, sql):
+        """
+        Execute SQL directly
+        """
+        self.cursor.execute(sql)
+
+    def disconnect(self):
+        self.cursor.close()
+        self._conn.close()
+        self.cursor = None
+        self._conn = None
+
 
 class ConnectionException(BaseException):
     pass

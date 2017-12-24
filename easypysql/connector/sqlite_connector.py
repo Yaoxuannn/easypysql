@@ -16,7 +16,7 @@ class SQLiteConnector(BaseConnector):
             "isolation_level": isolation_level,
             "uri": uri
         }
-        self._conn = self.connect(**self.attribute)
+        self.connect(**self.attribute)
 
     def connect(self, **kwargs):
         """
@@ -47,6 +47,3 @@ class SQLiteConnector(BaseConnector):
         if self._conn:
             self._conn.close()
         self._conn = self.connect(**self.attribute)
-
-    def execute(self, sql):
-        self.cursor.execute(sql)
