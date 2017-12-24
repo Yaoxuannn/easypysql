@@ -3,9 +3,9 @@ This is the core module of this micro framework.
 Easy object is the middleware and the controller of the others modules.
 """
 
-import url
-import connector
-from sqltypes import types
+from .url import parse_url
+from .connector import base
+from .sqltypes import types
 
 
 class Easy(object):
@@ -34,8 +34,9 @@ class Table(object):
 
 
 def easyconnect(provided_url, **kwargs):
-    pre_url = url.parse_url(provided_url)
-    real_target = connector.connector_map.get(pre_url.target)
+    pre_url = parse_url(provided_url)
+    real_target = base.connector_map.get(pre_url.target)
+    return real_target(pre_url.database)
 
 
 

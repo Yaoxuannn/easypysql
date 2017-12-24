@@ -2,7 +2,6 @@ import datetime
 
 
 class Field(object):
-
     __name__ = 'field'
 
     def __init__(self, sqltype, nullable=True, default=None, auto_increment=False, primary_key=False):
@@ -31,7 +30,6 @@ class SQLType(object):
 
 
 class Integer(SQLType):
-
     __name__ = 'integer'
 
     def __init__(self, real=False):
@@ -42,7 +40,6 @@ class Integer(SQLType):
 
 
 class String(SQLType):
-
     __name__ = 'string'
 
     def __init__(self, length):
@@ -52,9 +49,16 @@ class String(SQLType):
 
 
 class Time(SQLType):
-
     __name__ = 'time'
 
     def __init__(self):
         super(Time, self).__init__()
         self._type = datetime
+
+
+class Blob(SQLType):
+    __name__ = 'blob'
+
+    def __init__(self):
+        super(Blob, self).__init__()
+        self._type = bytes

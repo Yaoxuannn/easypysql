@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import sqlite3
-from . import BaseConnector, ConnectionException
+from .base import *
 
 
 class SQLiteConnector(BaseConnector):
@@ -17,7 +17,6 @@ class SQLiteConnector(BaseConnector):
             "uri": uri
         }
         self._conn = self.connect(**self.attribute)
-        self.cursor = self._conn.cursor()
 
     def connect(self, **kwargs):
         """
@@ -28,7 +27,9 @@ class SQLiteConnector(BaseConnector):
                 raise ConnectionException("Database cannot be None.")
             self._conn = sqlite3.connect(kwargs['database'])
         except sqlite3.Error as e:
-            print(e)
+            raise ConnectionException(e)
+        if self._conn:
+            self.cursor = self._conn.cursor()
 
     @property
     def transaction(self):
@@ -39,6 +40,10 @@ class SQLiteConnector(BaseConnector):
         return self._db
 
     def select_db(self, db):
+        """
+        Although sqlite3 regards a database as a file,
+        we still implement database change as reconnect to the new file
+        """
         if self._conn:
             self._conn.close()
         self._conn = self.connect(**self.attribute)

@@ -1,7 +1,7 @@
 # coding: utf-8
 
-from . import BaseConnector, ConnectionException
 import pymysql
+from .base import *
 
 
 class MysqlConnector(BaseConnector):
