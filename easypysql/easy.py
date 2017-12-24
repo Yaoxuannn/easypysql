@@ -35,8 +35,10 @@ class Table(object):
 
 def easyconnect(provided_url, **kwargs):
     pre_url = parse_url(provided_url)
-    real_target = base.connector_map.get(pre_url.target)
-    return real_target(pre_url.database)
+    items = vars(pre_url)
+    real_target = base.connector_map.get(items.pop('target'))
+    
+    return real_target(**items)
 
 
 

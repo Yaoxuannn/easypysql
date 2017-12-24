@@ -51,8 +51,10 @@ class ConnectionException(BaseException):
     pass
 
 
-
 from .sqlite_connector import SQLiteConnector
+from .mysql_connector import MysqlConnector
+
 connector_map = {
-    "sqlite": SQLiteConnector
+    "sqlite": SQLiteConnector,
+    "mysql": MysqlConnector
 }
