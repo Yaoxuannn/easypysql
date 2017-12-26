@@ -3,14 +3,16 @@
 This is the core module of this micro framework.
 Easy object is the middleware and the controller of the others modules.
 """
-
+from .sql.query import Query
 from .url import parse_url
 from .connector import base
+from .mapper import sqlmapping
 
 
 class Easy(object):
     def __init__(self, conn):
         self.connector = conn
+        self.send = conn.cursor.execute
 
     def add(self):
         pass
@@ -22,9 +24,16 @@ class Easy(object):
         pass
 
     def query(self, table):
-        pass
+        action = sqlmapping.SELECT
+        sql = sqlmapping.getsql(action, table)
+        # self.send(sql)
+        return Query()
 
     def _create(self, table):
+        action = sqlmapping.CREATE
+        sql = sqlmapping.getsql(action, table)
+        print(sql)
+        # self.send(sql)
         pass
 
     def commit(self):
@@ -40,10 +49,8 @@ class Easy(object):
             self._create(item)
 
     def create_all(self):
-        items = globals().values()
-        for v in items:
-            if v.__class__ is Table:
-                self.create(v)
+        for table in Table.__subclasses__():
+            self.create(table)
 
     def status(self):
         return self.connector.transaction
@@ -60,7 +67,7 @@ class Easy(object):
         return self.__str__()
 
 
-class ModelMetaClass(type):
+class TableMetaClass(type):
     def __new__(cls, name, bases, attrs):
         if name == "Table":
             return type.__new__(cls, name, bases, attrs)
@@ -68,7 +75,7 @@ class ModelMetaClass(type):
         return type.__new__(cls, name, bases, attrs)
 
 
-class Table(dict, metaclass=ModelMetaClass):
+class Table(dict, metaclass=TableMetaClass):
     __table_name__ = ""
 
     def __init__(self, **kwargs):

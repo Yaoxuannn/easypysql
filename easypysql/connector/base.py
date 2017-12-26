@@ -52,6 +52,12 @@ class BaseConnector:
         """
         self.cursor.execute(sql)
 
+    def commit(self):
+        self._conn.commit()
+
+    def rollback(self):
+        self._conn.rollback()
+
     def disconnect(self):
         self.cursor.close()
         self._conn.close()
