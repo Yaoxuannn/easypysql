@@ -4,6 +4,7 @@
 class Query(object):
     def __init__(self, result_set):
         self.pointer = -1
+        self.table = None
         self.result = result_set
 
     def all(self):
@@ -24,3 +25,6 @@ class Query(object):
 
     def order_by(self, field):
         pass
+
+    def set_table(self, table):
+        self.table = table

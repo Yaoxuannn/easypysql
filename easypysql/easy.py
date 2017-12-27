@@ -3,6 +3,7 @@
 This is the core module of this micro framework.
 Easy object is the middleware and the controller of the others modules.
 """
+from .sql.types import Field
 from .sql.query import Query
 from .url import parse_url
 from .connector import base
@@ -14,27 +15,44 @@ class Easy(object):
         self.connector = conn
         self.send = conn.cursor.execute
 
-    def add(self):
+    def add(self, obj):
+        sql = self._mapping_proxy(sqlmapping.INSERT, obj=obj)
+        print(sql)
+
+    def remove(self, obj):
+        sql = self._mapping_proxy(sqlmapping.DELETE, obj=obj)
+        print(sql)
+
+    def update(self, obj):
         pass
 
-    def remove(self):
-        pass
-
-    def update(self):
-        pass
-
-    def query(self, table):
-        action = sqlmapping.SELECT
-        sql = sqlmapping.getsql(action, table)
-        # self.send(sql)
-        return Query()
-
-    def _create(self, table):
-        action = sqlmapping.CREATE
-        sql = sqlmapping.getsql(action, table)
+    def query(self, item):
+        sql = self._mapping_proxy(sqlmapping.SELECT, table=item)
         print(sql)
         # self.send(sql)
-        pass
+        return Query(self.connector.cursor.fetchall())
+
+    def _create(self, table):
+        sql = self._mapping_proxy(sqlmapping.CREATE, table=table)
+        print(sql)
+        # self.send(sql)
+
+    @staticmethod
+    def _mapping_proxy(action, table=None, obj=None):
+        if action in [sqlmapping.CREATE, sqlmapping.SELECT]:
+            print(table.__class__)
+            if table in Table.__subclasses__() \
+                    or table.__class__ is Field:
+                sql = sqlmapping.getsql(action, table)
+                pass
+            else:
+                raise ValueError("Expected the a Table class or a Field instance, got %s" % table.__class__.__name__)
+        elif action in [sqlmapping.INSERT, sqlmapping.DELETE]:
+            table = obj.__class__
+            sql = sqlmapping.getsql(action, table, obj)
+        else:
+            sql = ''
+        return sql
 
     def commit(self):
         if self.connector.commit:
@@ -68,11 +86,16 @@ class Easy(object):
 
 
 class TableMetaClass(type):
-    def __new__(cls, name, bases, attrs):
-        if name == "Table":
-            return type.__new__(cls, name, bases, attrs)
-
-        return type.__new__(cls, name, bases, attrs)
+    def __new__(mcs, name, bases, attrs):
+        if name == "Table" or name == "Field":
+            return type.__new__(mcs, name, bases, attrs)
+        # TODO: ADD CHECK
+        # Make connection between Table and Fields
+        table_name = attrs['__table_name__']
+        for attr in attrs.values():
+            if attr.__class__.__name__ == "Field":
+                attr.table_name = table_name
+        return type.__new__(mcs, name, bases, attrs)
 
 
 class Table(dict, metaclass=TableMetaClass):
@@ -88,11 +111,3 @@ def easyconnect(provided_url, **kwargs):
     real_target = base.connector_map.get(items.pop('target'))
     items.update(kwargs)
     return Easy(real_target(**items))
-
-
-
-
-
-
-
-

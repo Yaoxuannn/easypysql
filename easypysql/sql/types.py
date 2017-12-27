@@ -3,7 +3,8 @@ from datetime import datetime
 
 
 class Field(object):
-    __name__ = 'field'
+
+    __name__ = "Field"
 
     def __init__(self, sqltype, nullable=True, default=None, auto_increment=False, primary_key=False):
         self.nullable = nullable
@@ -17,6 +18,7 @@ class Field(object):
             raise ValueError("Expected SQLType[Integer|String|Time|Blob], got %s" % sqltype.__class__.__name__)
         self._type = sqltype.python_type
         self.raw_data = None
+        self.table_name = None
 
     @property
     def python_type(self):
