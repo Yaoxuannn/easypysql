@@ -28,7 +28,7 @@ class Easy(object):
 
     def query(self, item):
         sql = self._mapping_proxy(sqlmapping.SELECT, table=item)
-        print(sql)
+        # print(sql)
         # self.send(sql)
         return Query(self.connector.cursor.fetchall())
 
@@ -40,7 +40,6 @@ class Easy(object):
     @staticmethod
     def _mapping_proxy(action, table=None, obj=None):
         if action in [sqlmapping.CREATE, sqlmapping.SELECT]:
-            print(table.__class__)
             if table in Table.__subclasses__() \
                     or table.__class__ is Field:
                 sql = sqlmapping.getsql(action, table)
@@ -92,9 +91,10 @@ class TableMetaClass(type):
         # TODO: ADD CHECK
         # Make connection between Table and Fields
         table_name = attrs['__table_name__']
-        for attr in attrs.values():
+        for key, attr in attrs.items():
             if attr.__class__.__name__ == "Field":
                 attr.table_name = table_name
+                attr.field_name = key
         return type.__new__(mcs, name, bases, attrs)
 
 
