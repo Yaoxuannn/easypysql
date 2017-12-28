@@ -8,6 +8,8 @@ from .url import parse_url
 from .connector import base
 from .mapper import sqlmapping
 
+ConnectionException = base.ConnectionException
+
 
 class Easy(object):
     """
@@ -24,14 +26,17 @@ class Easy(object):
     def __init__(self, conn):
         self.connector = conn
         self.send = conn.cursor.execute
+        sqlmapping.target = conn.target
 
     def add(self, obj):
         sql = self._mapping_proxy(sqlmapping.INSERT, obj=obj)
         print(sql)
+        self.send(sql)
 
     def remove(self, obj):
         sql = self._mapping_proxy(sqlmapping.DELETE, obj=obj)
         print(sql)
+        self.send(sql)
 
     def update(self, obj):
         pass
@@ -39,13 +44,13 @@ class Easy(object):
     def query(self, item):
         sql = self._mapping_proxy(sqlmapping.SELECT, table=item)
         print(sql)
-        # self.send(sql)
+        self.send(sql)
         return Query(self.connector.cursor.fetchall())
 
     def _create(self, table):
         sql = self._mapping_proxy(sqlmapping.CREATE, table=table)
         print(sql)
-        # self.send(sql)
+        self.send(sql)
 
     @staticmethod
     def _mapping_proxy(action, table=None, obj=None):

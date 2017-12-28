@@ -5,7 +5,7 @@ from .base import *
 
 
 class SQLiteConnector(BaseConnector):
-    def __init__(self, database=None, timeout=None, isolation_level=None, uri=None, **kwargs):
+    def __init__(self, database=None, timeout=None, isolation_level='DEFERRED', uri=None, **kwargs):
         super(SQLiteConnector, self).__init__()
         self._db = database
         self.target = "SQLite"

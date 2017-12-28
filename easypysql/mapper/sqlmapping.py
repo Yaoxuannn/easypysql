@@ -1,6 +1,8 @@
 # coding: utf-8
 from ..sql.types import Field
 
+
+target = None
 CREATE = 'CREATE TABLE IF NOT EXISTS'
 UPDATE = 'UPDATE'
 INSERT = 'INSERT INTO'
@@ -60,8 +62,8 @@ def _parse_field(name, field):
     if field.primary_key:
         sql.append('PRIMARY KEY')
     if field.auto_increment:
-        sql.append('AUTO_INCREMENT')
+        sql.append("AUTO_INCREMENT" if target != 'SQLite' else "AUTOINCREMENT")
     if field.default is not None:
-        sql.append('DEFAULT=%s' % str(field.default))
+        sql.append('DEFAULT %s' % str(field.default))
     sql.append(',')
     return ' '.join(sql)
