@@ -1,7 +1,6 @@
 # coding: utf-8
 """
 This is the core module of this micro framework.
-Easy object is the middleware and the controller of the others modules.
 """
 from .sql.types import Field
 from .sql.query import Query
@@ -11,6 +10,17 @@ from .mapper import sqlmapping
 
 
 class Easy(object):
+    """
+    Easy object is the middleware and the controller of the others modules.
+    Almost every operation via Easy object.
+
+    The basic SQL operation is create, create_all, add, remove, update, query.
+
+    You can use easyObj.commit & easyObj.rollback which calls the connector's function(if supports)
+    To get the transaction status, just call easyObj.status() which also use the connector's.
+
+    Don't forget to close or disconnect after you use the easyObj, close and disconnect toward to the same
+    """
     def __init__(self, conn):
         self.connector = conn
         self.send = conn.cursor.execute
@@ -28,7 +38,7 @@ class Easy(object):
 
     def query(self, item):
         sql = self._mapping_proxy(sqlmapping.SELECT, table=item)
-        # print(sql)
+        print(sql)
         # self.send(sql)
         return Query(self.connector.cursor.fetchall())
 
@@ -42,13 +52,13 @@ class Easy(object):
         if action in [sqlmapping.CREATE, sqlmapping.SELECT]:
             if table in Table.__subclasses__() \
                     or table.__class__ is Field:
-                sql = sqlmapping.getsql(action, table)
+                sql = sqlmapping.get_sql(action, table)
                 pass
             else:
                 raise ValueError("Expected the a Table class or a Field instance, got %s" % table.__class__.__name__)
         elif action in [sqlmapping.INSERT, sqlmapping.DELETE]:
             table = obj.__class__
-            sql = sqlmapping.getsql(action, table, obj)
+            sql = sqlmapping.get_sql(action, table, obj)
         else:
             sql = ''
         return sql
@@ -76,6 +86,9 @@ class Easy(object):
         self.connector.disconnect()
         self.connector = None
 
+    def close(self):
+        self.disconnect()
+
     def __str__(self):
         return "<EasyObj target={} database={} status={}>".format(
             self.connector.target, self.connector.database, self.status())
@@ -85,6 +98,9 @@ class Easy(object):
 
 
 class TableMetaClass(type):
+    """
+    MetaClass for the Table class
+    """
     def __new__(mcs, name, bases, attrs):
         if name == "Table" or name == "Field":
             return type.__new__(mcs, name, bases, attrs)
@@ -99,15 +115,38 @@ class TableMetaClass(type):
 
 
 class Table(dict, metaclass=TableMetaClass):
+    """
+    As the table inherit from the native dict Class, it's easy to use.
+    """
     __table_name__ = ""
 
     def __init__(self, **kwargs):
         super(Table, self).__init__(**kwargs)
+        for k, v in vars(self.__class__).items():
+            if v.__class__.__name__ == "Field":
+                if getattr(v, 'default') is not None:
+                    self.setdefault(k, getattr(v, 'default'))
+                else:
+                    if k in kwargs:
+                        pass
+                    else:
+                        raise KeyError('Unspecified key %s with no default attribute' % k)
 
 
 def easyconnect(provided_url, **kwargs):
+    """
+    The way of getting the instance of Easy
+    :param provided_url:
+    URL should be like this: PROTO://USER:PASS@HOST/DB, PROTO is required.
+    e.g: sqlite:///test  |  mysql://user:pass@localhost/test
+    :param kwargs: The params for connection like timeout
+    :return: EasyObj
+    """
     pre_url = parse_url(provided_url)
     items = vars(pre_url)
     real_target = base.connector_map.get(items.pop('target'))
     items.update(kwargs)
     return Easy(real_target(**items))
+
+
+connect = easyconnect

@@ -1,14 +1,14 @@
 # coding: utf-8
 from ..sql.types import Field
 
-CREATE = 'CREATE TABLE'
+CREATE = 'CREATE TABLE IF NOT EXISTS'
 UPDATE = 'UPDATE'
 INSERT = 'INSERT INTO'
 DELETE = 'DELETE FROM'
 SELECT = 'SELECT {} FROM'
 
 
-def getsql(action, table, obj=None):
+def get_sql(action, table, obj=None):
     # UPDATE student SET name='Justin' WHERE
     # INSERT INTO student VALUES(XX,XX,XX)
     # DELETE FROM student WHERE
@@ -30,6 +30,11 @@ def getsql(action, table, obj=None):
         if table.__class__ is Field:
             selector = table.field_name
         return pre_sql.format(selector)
+    elif action == INSERT:
+        pre_sql += " VALUES("
+        values = str([val for val in obj.values()])[1:-1]
+        sql = "{}{})".format(pre_sql, values)
+        return sql
 
 
 def _get_field(item):
@@ -40,11 +45,7 @@ def _get_field(item):
     return fields
 
 
-def _operate_field(field):
-    pass
-
-
-# FOR CREATE
+# FOR CREATE ONLY
 def _parse_field(name, field):
     """
     id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY DEFAULT=5,
