@@ -4,6 +4,7 @@
 class Query(object):
     def __init__(self, result_set):
         self.pointer = -1
+        self.table = None
         self.table_map = None
         self.result = result_set
 
@@ -32,9 +33,16 @@ class Query(object):
             order_set.sort(key=lambda x: x[index])
             if desc:
                 order_set.reverse()
-            return order_set
+            q = Query(order_set)
+            q.set_table(self.table_map)
+            return q
         else:
             raise ValueError('Only Table query can use order_by.')
 
-    def set_table(self, table):
-        self.table_map = table
+    def set_table(self, table, table_map=None):
+        self.table = table
+        self.table_map = table_map
+        self.result = self._build_result_set()
+
+    def _build_result_set(self):
+        return [self.table(**dict(zip(self.table_map, item))) for item in self.result]

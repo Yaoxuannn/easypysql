@@ -44,7 +44,7 @@ class Easy(object):
         self.send(sql)
         query = Query(self.connector.cursor.fetchall())
         if item in Table.__subclasses__():
-            query.set_table(item.map)
+            query.set_table(item, item.map)
         return query
 
     def _create(self, table):
@@ -68,10 +68,12 @@ class Easy(object):
         return sql
 
     def commit(self):
+        assert self.connector.commit
         if self.connector.commit:
             self.connector.commit()
 
     def rollback(self):
+        assert self.connector.rollback
         if self.connector.rollback:
             self.connector.rollback()
 
@@ -134,7 +136,9 @@ class Table(dict, metaclass=_TableMetaClass):
             if v.__class__.__name__ == "Field":
                 if getattr(v, 'default') is not None:
                     self.setdefault(k, getattr(v, 'default'))
+                    v.fill(getattr(v, 'default'))
                 else:
+                    v.fill(kwargs[k])
                     if k not in kwargs:
                         raise KeyError('Unspecified key %s with no default attribute' % k)
 

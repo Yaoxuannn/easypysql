@@ -31,6 +31,12 @@ class Field(object):
     def fill(self, value):
         self.raw_data = value
 
+    def __str__(self):
+        return str(self.raw)
+
+    def __repr__(self):
+        return str(self.raw)
+
 
 class _SQLType(object):
     def __init__(self):
