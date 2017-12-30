@@ -30,12 +30,10 @@ class Easy(object):
 
     def add(self, obj):
         sql = self._mapping_proxy(sqlmapping.INSERT, obj=obj)
-        print(sql)
         self.send(sql)
 
     def remove(self, obj):
         sql = self._mapping_proxy(sqlmapping.DELETE, obj=obj)
-        print(sql)
         self.send(sql)
 
     def update(self, obj):
@@ -43,13 +41,11 @@ class Easy(object):
 
     def query(self, item):
         sql = self._mapping_proxy(sqlmapping.SELECT, table=item)
-        print(sql)
         self.send(sql)
         return Query(self.connector.cursor.fetchall())
 
     def _create(self, table):
         sql = self._mapping_proxy(sqlmapping.CREATE, table=table)
-        print(sql)
         self.send(sql)
 
     @staticmethod
@@ -102,14 +98,16 @@ class Easy(object):
         return self.__str__()
 
 
-class TableMetaClass(type):
+class _TableMetaClass(type):
     """
     MetaClass for the Table class
     """
     def __new__(mcs, name, bases, attrs):
         if name == "Table" or name == "Field":
             return type.__new__(mcs, name, bases, attrs)
-        # TODO: ADD CHECK
+        # TODO: ADD SOME CHECKS
+        if '__table_name__' not in attrs:
+            attrs['__table_name__'] = name.lower()
         # Make connection between Table and Fields
         table_name = attrs['__table_name__']
         for key, attr in attrs.items():
@@ -119,7 +117,7 @@ class TableMetaClass(type):
         return type.__new__(mcs, name, bases, attrs)
 
 
-class Table(dict, metaclass=TableMetaClass):
+class Table(dict, metaclass=_TableMetaClass):
     """
     As the table inherit from the native dict Class, it's easy to use.
     """
@@ -132,9 +130,7 @@ class Table(dict, metaclass=TableMetaClass):
                 if getattr(v, 'default') is not None:
                     self.setdefault(k, getattr(v, 'default'))
                 else:
-                    if k in kwargs:
-                        pass
-                    else:
+                    if k not in kwargs:
                         raise KeyError('Unspecified key %s with no default attribute' % k)
 
 
