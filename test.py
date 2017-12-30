@@ -26,7 +26,7 @@ stu1 = Student(id=4, name="Justin4", age=21)
 easy.add(stu1)
 # easy.commit()
 
-result = easy.query(Student.name).first()
+result = easy.query(Student).order_by(Student)
 # easy.query(Student).first()
 
 print(result)
