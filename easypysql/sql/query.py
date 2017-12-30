@@ -6,7 +6,8 @@ class Query(object):
         self.pointer = -1
         self.table = None
         self.table_map = None
-        self.result = result_set
+        self.result = []
+        self.raw_result = result_set
 
     def all(self):
         return self.result
@@ -28,21 +29,25 @@ class Query(object):
         if self.table_map is not None:
             if field.__class__.__name__ is not "Field":
                 raise ValueError('Only Field can be ordered.')
-            index = self.table_map.index(field.field_name)
             order_set = self.result.copy()
-            order_set.sort(key=lambda x: x[index])
+            order_set.sort(key=lambda x: x.get(field.field_name))
+            print(order_set)
             if desc:
                 order_set.reverse()
-            q = Query(order_set)
-            q.set_table(self.table_map)
+            q = Query(self._unpack_query(order_set))
+            q.set_table(self.table, self.table_map)
             return q
         else:
             raise ValueError('Only Table query can use order_by.')
 
-    def set_table(self, table, table_map=None):
+    def set_table(self, table, table_map):
         self.table = table
         self.table_map = table_map
         self.result = self._build_result_set()
 
     def _build_result_set(self):
-        return [self.table(**dict(zip(self.table_map, item))) for item in self.result]
+        return [self.table(**dict(zip(self.table_map, item))) for item in self.raw_result]
+
+    @staticmethod
+    def _unpack_query(query_list):
+        return [item.values() for item in query_list]
