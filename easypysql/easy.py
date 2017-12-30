@@ -138,9 +138,9 @@ class Table(dict, metaclass=_TableMetaClass):
                     self.setdefault(k, getattr(v, 'default'))
                     v.fill(getattr(v, 'default'))
                 else:
-                    v.fill(kwargs[k])
                     if k not in kwargs:
                         raise KeyError('Unspecified key %s with no default attribute' % k)
+                    v.fill(kwargs[k])
 
 
 def easyconnect(provided_url, **kwargs):
