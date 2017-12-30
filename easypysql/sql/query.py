@@ -6,7 +6,7 @@ class Query(object):
         self.pointer = -1
         self.table = None
         self.table_map = None
-        self.result = []
+        self.result = result_set
         self.raw_result = result_set
 
     def all(self):
@@ -14,10 +14,6 @@ class Query(object):
 
     def first(self):
         return self.result[0]
-
-    def one(self):
-        self.pointer += 1
-        return self.result[self.pointer]
 
     def count(self):
         return len(self.result)
@@ -31,7 +27,6 @@ class Query(object):
                 raise ValueError('Only Field can be ordered.')
             order_set = self.result.copy()
             order_set.sort(key=lambda x: x.get(field.field_name))
-            print(order_set)
             if desc:
                 order_set.reverse()
             q = Query(self._unpack_query(order_set))
