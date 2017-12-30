@@ -19,6 +19,7 @@ class Field(object):
         self._type = sqltype.python_type
         self.raw_data = None
         self.table_name = None
+        self.field_name = None
 
     @property
     def python_type(self):

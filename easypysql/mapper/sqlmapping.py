@@ -8,6 +8,7 @@ UPDATE = 'UPDATE'
 INSERT = 'INSERT INTO'
 DELETE = 'DELETE FROM'
 SELECT = 'SELECT {} FROM'
+DROP = 'DROP TABLE'
 
 
 def get_sql(action, table, obj=None):
@@ -33,10 +34,16 @@ def get_sql(action, table, obj=None):
             selector = table.field_name
         return pre_sql.format(selector)
     elif action == INSERT:
-        pre_sql += " VALUES("
+        vals = table.map.copy()
+        for k in table.get_field():
+            if k.auto_increment and not obj.get(k.field_name):
+                vals.remove(k.field_name)
+        pre_sql += "(%s) VALUES(" % ", ".join(vals)
         values = str([val for val in obj.values()])[1:-1]
         sql = "{}{})".format(pre_sql, values)
         return sql
+    elif action == DROP:
+        return pre_sql
 
 
 def _get_field(item):

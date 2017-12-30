@@ -47,6 +47,18 @@ class Easy(object):
             query.set_table(item, item.map)
         return query
 
+    def drop(self, *tables):
+        for t in tables:
+            self._drop(t)
+
+    def drop_all(self):
+        for table in Table.__subclasses__():
+            self.drop(table)
+
+    def _drop(self, table):
+        sql = self._mapping_proxy(sqlmapping.DROP, table=table)
+        self.send(sql)
+
     def _create(self, table):
         sql = self._mapping_proxy(sqlmapping.CREATE, table=table)
         self.send(sql)
@@ -64,7 +76,7 @@ class Easy(object):
             table = obj.__class__
             sql = sqlmapping.get_sql(action, table, obj)
         else:
-            sql = ''
+            sql = sqlmapping.get_sql(action, table, obj)
         return sql
 
     def commit(self):
@@ -138,9 +150,18 @@ class Table(dict, metaclass=_TableMetaClass):
                     self.setdefault(k, getattr(v, 'default'))
                     v.fill(getattr(v, 'default'))
                 else:
-                    if k not in kwargs:
+                    if k not in kwargs and getattr(v, 'auto_increment') is None:
                         raise KeyError('Unspecified key %s with no default attribute' % k)
+                if k in kwargs:
                     v.fill(kwargs[k])
+
+    @classmethod
+    def get_field(cls):
+        fields = []
+        for k, v in vars(cls).items():
+            if v.__class__.__name__ == "Field":
+                fields.append(v)
+        return fields
 
 
 def easyconnect(provided_url, **kwargs):
