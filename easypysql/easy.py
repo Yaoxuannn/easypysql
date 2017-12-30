@@ -42,7 +42,10 @@ class Easy(object):
     def query(self, item):
         sql = self._mapping_proxy(sqlmapping.SELECT, table=item)
         self.send(sql)
-        return Query(self.connector.cursor.fetchall())
+        query = Query(self.connector.cursor.fetchall())
+        if item in Table.__subclasses__():
+            query.set_table(item.map)
+        return query
 
     def _create(self, table):
         sql = self._mapping_proxy(sqlmapping.CREATE, table=table)
@@ -106,6 +109,7 @@ class _TableMetaClass(type):
         if name == "Table" or name == "Field":
             return type.__new__(mcs, name, bases, attrs)
         # TODO: ADD SOME CHECKS
+        attrs.update({"map": []})
         if '__table_name__' not in attrs:
             attrs['__table_name__'] = name.lower()
         # Make connection between Table and Fields
@@ -114,6 +118,7 @@ class _TableMetaClass(type):
             if attr.__class__.__name__ == "Field":
                 attr.table_name = table_name
                 attr.field_name = key
+                attrs['map'].append(key)
         return type.__new__(mcs, name, bases, attrs)
 
 
