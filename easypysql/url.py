@@ -23,8 +23,6 @@ class URL(object):
     #     pass
 
 
-
-
 def parse_url(url):
     pattern = re.compile(r"""
         (?P<target>\w+)://
