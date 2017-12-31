@@ -54,6 +54,8 @@ except ConnectionException:
 
 the method `easyconnect` has an alias as `connect`, which has the exactly same effect of the former. This action is for someone who don't like the name of `easyconnect`. As this method called, a connection will be established.
 
+> The standard of url is : `PROTO://USER:PASS@HOST:PORT/DATABASE`
+
 Now you can use `easy` to do some cool things!
 
 **Remember: When you finish the easy using, please close or disconnect it.** Like the following code shows:
