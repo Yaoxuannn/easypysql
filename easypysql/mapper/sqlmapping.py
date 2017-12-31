@@ -44,6 +44,23 @@ def get_sql(action, table, obj=None):
         return sql
     elif action == DROP:
         return pre_sql
+    elif action == DELETE:
+        return "{} {}".format(pre_sql, _where_construct(obj))
+
+
+def _where_construct(obj):
+    where = 'WHERE {}'
+    pattern = "{}={}"
+    condition = []
+    for k, v in obj.items():
+        condition.append(pattern.format(k, _format_value(v)))
+    return where.format(" AND ".join(condition))
+
+
+def _format_value(val):
+    if isinstance(val, str):
+        return "'{}'".format(val)
+    return val
 
 
 def _get_field(item):

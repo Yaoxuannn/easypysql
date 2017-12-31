@@ -32,7 +32,7 @@ class Easy(object):
         sql = self._mapping_proxy(sqlmapping.INSERT, obj=obj)
         self.send(sql)
 
-    def remove(self, obj):
+    def delete(self, obj):
         sql = self._mapping_proxy(sqlmapping.DELETE, obj=obj)
         self.send(sql)
 
@@ -58,6 +58,7 @@ class Easy(object):
     def _drop(self, table):
         sql = self._mapping_proxy(sqlmapping.DROP, table=table)
         self.send(sql)
+        print(sql)
 
     def _create(self, table):
         sql = self._mapping_proxy(sqlmapping.CREATE, table=table)
