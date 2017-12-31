@@ -13,7 +13,7 @@ class Query(object):
         return self.result
 
     def first(self):
-        return self.result[0]
+        return self.result[0] if self.result else None
 
     def count(self):
         return len(self.result)
