@@ -186,3 +186,12 @@ length = easy.query(Student).count()
 
 In this case, the value of `length` is `1`.
 
+### Execute raw SQL
+
+Also, easypysql allows you to pass raw SQL:
+
+```python
+easy.send('''SQL HERE''')
+```
+
+Actually, send is the same `execute` method which provided by the connector.
