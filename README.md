@@ -136,7 +136,7 @@ easy.delete(result)
 
 And believe you still remember, only when you manually call `easy.commit()` to make this change happen in your database. (Or change the transaction mode to auto_commit when you make easyconnect)
 
-### Query
+### Make a query
 
 Now we have an record in the tmpdb.student, how to get it to use it?
 
@@ -194,4 +194,4 @@ Also, easypysql allows you to pass raw SQL:
 easy.send('''SQL HERE''')
 ```
 
-Actually, send is the same `execute` method which provided by the connector.
+Actually, send is the `execute` method which is implemented by the connector.
