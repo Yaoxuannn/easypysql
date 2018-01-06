@@ -17,7 +17,7 @@ class Field(object):
         else:
             raise ValueError("Expected SQLType[Integer|String|Time|Blob], got %s" % sqltype.__class__.__name__)
         self._type = sqltype.python_type
-        self.raw_data = None
+        self._raw_data = None
         self.table_name = None
         self.field_name = None
 
@@ -27,16 +27,35 @@ class Field(object):
 
     @property
     def raw(self):
-        return self.raw_data
+        return self._raw_data
+
+    def __lt__(self, other):
+        self._check_type(self, other)
+        return self.field_name, "<", other
+
+    def __le__(self, other):
+        self._check_type(self, other)
+        return self.field_name, "<=", other
+
+    def __ge__(self, other):
+        self._check_type(self, other)
+        return self.field_name, ">=", other
+
+    def __gt__(self, other):
+        self._check_type(self, other)
+        return self.field_name, ">", other
+
+    def __eq__(self, other):
+        self._check_type(self, other)
+        return self.field_name, "=", other
+
+    @staticmethod
+    def _check_type(field, other):
+        if not isinstance(other, field.python_type):
+            raise TypeError("Cannot make comparision between %s and %s" % (field.python_type.__name__, other.__class__.__name__))
 
     def fill(self, value):
-        self.raw_data = value
-
-    def __str__(self):
-        return str(self.raw)
-
-    def __repr__(self):
-        return str(self.raw)
+        self._raw_data = value
 
 
 class _SQLType(object):

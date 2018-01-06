@@ -3,7 +3,6 @@
 
 class Query(object):
     def __init__(self, result_set):
-        self.pointer = -1
         self.table = None
         self.table_map = None
         self.result = result_set
@@ -19,7 +18,26 @@ class Query(object):
         return len(self.result)
 
     def filter(self, *args):
-        pass
+        filter_set = []
+        for item in self.result:
+            flag = True
+            for rule in args:
+                if not self._filter(item, rule):
+                    flag = False
+            if flag:
+                filter_set.append(item)
+        return self._pack_query(filter_set)
+
+    @staticmethod
+    def _filter(result, rule):
+        value = result.get(rule[0])
+        other = rule[2]
+        return eval("%s%s%s" % (value, rule[1], other))
+
+    def _pack_query(self, result_set):
+        q = Query(self._unpack_query(result_set))
+        q.set_table(self.table, self.table_map)
+        return q
 
     def order_by(self, field, desc=False):
         if self.table_map is not None:
@@ -29,9 +47,7 @@ class Query(object):
             order_set.sort(key=lambda x: x.get(field.field_name))
             if desc:
                 order_set.reverse()
-            q = Query(self._unpack_query(order_set))
-            q.set_table(self.table, self.table_map)
-            return q
+            return self._pack_query(order_set)
         else:
             raise ValueError('Only Table query can use order_by.')
 

@@ -186,6 +186,16 @@ length = easy.query(Student).count()
 
 In this case, the value of `length` is `1`.
 
+**Bug: When you execute a query, the field object of the table will have the last value of the result set.**
+
+Additionally, easypysql also support `filter`, you can make query like this:
+
+```python
+result = easy.query(Student).filter(Student.id > 2, Student.age > 20).all()
+```
+
+Then you will get the filtered result set.
+
 ### Execute raw SQL
 
 Also, easypysql allows you to pass raw SQL:
