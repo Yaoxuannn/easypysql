@@ -64,6 +64,11 @@ def _format_value(val):
 
 
 def _get_field(item):
+    """
+    Util method for getting all fields object in a Table.
+    :param item: A Table class
+    :return fields in a list
+    """
     fields = {}
     for k, v in item.__dict__.items():
         if isinstance(v, Field):

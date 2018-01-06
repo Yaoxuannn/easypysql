@@ -2,6 +2,14 @@
 
 
 class Query(object):
+    """
+    Query object is a convenient way for users to deal with the
+    result set, you can use the `order_by` and the `filter`
+    method to get the result set you want.
+
+    However, it is also a good idea to fetch all result and make
+    filter by yourself.
+    """
     def __init__(self, result_set):
         self.table = None
         self.table_map = None
@@ -35,6 +43,13 @@ class Query(object):
         return eval("%s%s%s" % (value, rule[1], other))
 
     def _pack_query(self, result_set):
+        """
+        A query object must have the result and the map for
+        its table, the result set will be built from simple value
+        to the subclassed you created of Table
+        :param result_set:
+        :return:
+        """
         q = Query(self._unpack_query(result_set))
         q.set_table(self.table, self.table_map)
         return q
@@ -57,6 +72,11 @@ class Query(object):
         self.result = self._build_result_set()
 
     def _build_result_set(self):
+        """
+        the result set will be built from simple value
+        to the subclassed you created of Table
+        :return:
+        """
         return [self.table(**dict(zip(self.table_map, item))) for item in self.raw_result]
 
     @staticmethod

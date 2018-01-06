@@ -72,6 +72,9 @@ class ConnectionException(BaseException):
 from .sqlite_connector import SQLiteConnector
 from .mysql_connector import MysqlConnector
 
+# When some more connector added, be sure
+# the name(PROTO in URL) and the Class in
+# this dict to use them normally
 connector_map = {
     "sqlite": SQLiteConnector,
     "mysql": MysqlConnector
