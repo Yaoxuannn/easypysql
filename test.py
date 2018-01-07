@@ -1,7 +1,11 @@
 from easypysql.easy import easyconnect, Table, ConnectionException
 from easypysql.sql.types import Field, Integer, String
+from faker import Factory
+from random import randint
 
-path = "/tmp/tmpdb"
+
+f = Factory().create()
+path = ":memory:"
 easy = None
 
 try:
@@ -11,8 +15,7 @@ except ConnectionException:
 
 
 class Student(Table):
-
-    # __table_name__ = 'student'
+    __table_name__ = 'student'
 
     id = Field(Integer(), auto_increment=True)
     name = Field(String(), nullable=False)
@@ -21,12 +24,20 @@ class Student(Table):
 
 easy.create_all()
 
-stu1 = Student(id=4, name="Justin4", age=21)
+for n in range(100):
+    stu = Student(name=f.name(), age=randint(16, 32))
+    easy.add(stu)
 
-easy.add(stu1)
-# easy.commit()
+easy.commit()
 
-result = easy.query(Student).order_by(Student)
-# easy.query(Student).first()
+re = easy.query(Student)\
+    .filter(Student.id > 1, Student.age > 20)\
+    .order_by(Student.age, desc=True)\
+    .all()
 
-print(result)
+
+print(re)
+
+easy.drop_all()
+
+easy.close()
