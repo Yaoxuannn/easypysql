@@ -3,6 +3,14 @@ from datetime import datetime
 
 
 class Field(object):
+    """
+    Field object is mapped as the row of the table in database,
+    this framework only support limited attributes: null default
+    auto_increment primary_key.
+
+    The fill method will set the value of field, but it is strongly not
+    recommend you to call this method. It may cause some bad effect.
+    """
 
     __name__ = "Field"
 
@@ -59,6 +67,9 @@ class Field(object):
 
 
 class _SQLType(object):
+    """
+    Basic SQLType.
+    """
     def __init__(self):
         self.python_type = None
 
