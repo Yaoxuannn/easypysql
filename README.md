@@ -33,6 +33,10 @@ Almost every Object-SQL transform are done in the `mapper.sqlmapping`.
 
 The url module is more like a util module, I write this module (And i learnt some regular expression from SQLalchemy.) to support URL-connect method, and modified the component which i will show you in the next part of this article.
 
+Here is a mindmap for this framework:
+
+![easypysql_mind](http://omps875vw.bkt.clouddn.com/easypysql_mind.png)
+
 ## Instruction
 
 I name this ORM cake **`easypysql`**, that means it is easy to use. Additionally, only use it in a easy condition.
