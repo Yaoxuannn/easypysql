@@ -9,7 +9,7 @@ setup(
     author_email='justin13wyx@gmail.com',
     url='https://github.com/Justin13wyx/easypysql',
     description='A simple and small python ORM framework',
-    long_description=open("README.md", encoding="utf-8").read(),
+    # long_description=open("README.md", encoding="utf-8").read(),
     packages=['easypysql'],
     install_requires=["pymysql"],
 
