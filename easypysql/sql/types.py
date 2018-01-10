@@ -2,40 +2,13 @@
 from datetime import datetime
 
 
-class Field(object):
+class _Comparotor(object):
     """
-    Field object is mapped as the row of the table in database,
-    this framework only support limited attributes: null default
-    auto_increment primary_key.
-
-    The fill method will set the value of field, but it is strongly not
-    recommend you to call this method. It may cause some bad effect.
+    To support filter function, add this class to handle comparision.
     """
-
-    __name__ = "Field"
-
-    def __init__(self, sqltype, nullable=True, default=None, auto_increment=False, primary_key=False):
-        self.nullable = nullable
-        self.default = default
-        self.auto_increment = auto_increment
-        # If auto_increment is True so the primary key should be True
-        self.primary_key = True if auto_increment else primary_key
-        if isinstance(sqltype, _SQLType):
-            self.sqltype = sqltype
-        else:
-            raise ValueError("Expected SQLType[Integer|String|Time|Blob], got %s" % sqltype.__class__.__name__)
-        self._type = sqltype.python_type
-        self._raw_data = None
-        self.table_name = None
+    def __init__(self):
         self.field_name = None
-
-    @property
-    def python_type(self):
-        return self._type
-
-    @property
-    def raw(self):
-        return self._raw_data
+        self.python_type = None
 
     def __lt__(self, other):
         self._check_type(self, other)
@@ -61,6 +34,46 @@ class Field(object):
     def _check_type(field, other):
         if not isinstance(other, field.python_type):
             raise TypeError("Cannot make comparision between %s and %s" % (field.python_type.__name__, other.__class__.__name__))
+
+
+class Field(_Comparotor):
+    """
+    Field object is mapped as the row of the table in database,
+    this framework only support limited attributes: null default
+    auto_increment primary_key.
+
+    The fill method will set the value of field, but it is strongly not
+    recommend you to call this method. It may cause some bad effect.
+    """
+
+    __name__ = "Field"
+
+    def __init__(self, sqltype, nullable=True, default=None, auto_increment=False, primary_key=False):
+        super(Field, self).__init__()
+        self.nullable = nullable
+        self.default = default
+        self.auto_increment = auto_increment
+        # If auto_increment is True so the primary key should be True
+        self.primary_key = True if auto_increment else primary_key
+        if isinstance(sqltype, _SQLType):
+            self.sqltype = sqltype
+        else:
+            raise ValueError("Expected SQLType[Integer|String|Time|Blob], got %s" % sqltype.__class__.__name__)
+        self._type = sqltype.python_type
+        self._raw_data = None
+        self.table_name = None
+
+    @property
+    def python_type(self):
+        return self._type
+
+    @python_type.setter
+    def python_type(self, value):
+        self._type = value
+
+    @property
+    def raw(self):
+        return self._raw_data
 
     def fill(self, value):
         self._raw_data = value

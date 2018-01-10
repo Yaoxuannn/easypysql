@@ -16,16 +16,17 @@ class SQLiteConnector(BaseConnector):
             "isolation_level": isolation_level,
             "uri": uri
         }
-        self.connect(**self.attribute)
+        self.attribute.update(kwargs)
+        self.connect()
 
-    def connect(self, **kwargs):
+    def connect(self):
         """
         Establish the connection to the sqlite3 database.
         """
         try:
-            if kwargs['database'] is None:
+            if self.attribute['database'] is None:
                 raise ConnectionException("Database cannot be None.")
-            self._conn = sqlite3.connect(kwargs['database'])
+            self._conn = sqlite3.connect(**self.attribute)
         except sqlite3.Error as e:
             raise ConnectionException(e)
         if self._conn:

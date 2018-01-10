@@ -89,7 +89,7 @@ class Student(Table):
 easy.create_all()
 ```
 
-To create a table, declare a class which inherits the Table class. It is strongly recommanded you to give the value of the `__table_name__`, the default value of it is the name of the class. Then the real table will be created if you call the `create(db_name1, db_name2, ...)` method, an easier way is using the `create_all()` like what i was do in the example.
+To create a table, declare a class which inherits the Table class. It is strongly recommanded you to give the value of the `__table_name__`, the default value of it is the name of the class. Then the real table will be created if you call the `create(db_name1, db_name2, ...)` method, an easier way is using the `create_all()` like what i did in the example.
 
 ```python
 stu1 = Student(id=1, name="Justin", age=20)
