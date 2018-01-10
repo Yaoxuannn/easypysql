@@ -2,6 +2,21 @@
 
 This is a small and simple ORM micro-framework implements with Python3. Here is a simple introduction of it and the instruction for using. (**PLEASE DO NOT USE IT IN A PRODUCTION ENV.**)
 
+## Installation
+
+The most simple way is:
+
+```bash
+pip install easypysql
+```
+
+or you can download the source code and manually install it, you can get that in the Github release.
+
+```bash
+tar -zxvf easypysql-X.X.X.tar.gz
+python3 setup.py install
+```
+
 ## Introduction
 
 Following is the structure of the whole framework.
