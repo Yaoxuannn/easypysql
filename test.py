@@ -5,15 +5,15 @@ from random import randint
 
 
 f = Factory().create()
-path = ":memory:"
-easy = None
-
-try:
-    easy = easyconnect("sqlite:///%s" % path, timeout=10)
-except ConnectionException:
-    pass
-
-
+# path = ":memory:"
+# easy = None
+#
+# try:
+#     easy = easyconnect("sqlite:///%s" % path, timeout=10)
+# except ConnectionException:
+#     pass
+#
+#
 class Student(Table):
     __table_name__ = 'student'
 
@@ -21,6 +21,27 @@ class Student(Table):
     name = Field(String(), nullable=False)
     age = Field(Integer(), nullable=True, default=0)
 
+
+# easy.create_all()
+#
+# for n in range(100):
+#     stu = Student(name=f.name(), age=randint(16, 32))
+#     easy.add(stu)
+#
+# easy.commit()
+#
+# re = easy.query(Student)\
+#     .filter(Student.id > 1, Student.age > 20)\
+#     .order_by(Student.age, desc=True)\
+#     .all()
+#
+#
+# print(re)
+#
+# easy.drop_all()
+#
+# easy.close()
+easy = easyconnect("mysql://user:password?@127.0.0.1:3306/test")
 
 easy.create_all()
 
@@ -37,7 +58,5 @@ re = easy.query(Student)\
 
 
 print(re)
-
-easy.drop_all()
 
 easy.close()
