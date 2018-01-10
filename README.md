@@ -187,7 +187,7 @@ The output is:
 ('Justin',)
 ```
 
-If the reasult set is `[]`. The `first()` will return `None` instead.
+If the result set is `[]`. The `first()` will return `None` instead.
 
 Like what you learnt from SQLAlchemy, `Query` object also support chaining call, like the following shows:
 
@@ -200,7 +200,7 @@ results = easy.query(Student)\
 
 If the result set is `[]`, The `all()` will return `[]`.
 
-`order_by`is a sort method that will return a new `Query` object that contain a new result set which has the right sequence you want.
+`order_by` is a sort method that will return a new `Query` object that contain a new result set which has the right sequence you want.
 
 And also, `count()` will return the total number of the result set:
 
