@@ -29,6 +29,8 @@ The core module of this framework is `easy.py` which performs as the interactor 
 
 As you see the connector package is the driver for `Easypysql`. It is **possible** to support more types of databases as the  new `DB_connector` inherits the `BaseConnector` and implements in a proper way, just like the plugin.
 
+Now, easypysql only support mysql(beta) and sqlite.
+
 Almost every Object-SQL transform are done in the `mapper.sqlmapping`.
 
 The url module is more like a util module, I write this module (And i learnt some regular expression from SQLalchemy.) to support URL-connect method, and modified the component which i will show you in the next part of this article.
@@ -175,7 +177,10 @@ If the reasult set is `[]`. The `first()` will return `None` instead.
 Like what you learnt from SQLAlchemy, `Query` object also support chaining call, like the following shows:
 
 ```python
-result = easy.query(Student).order_by(Student.name).all()
+results = easy.query(Student)\
+    .filter(Student.id > 1, Student.age > 20)\
+    .order_by(Student.age, desc=True)\
+    .all()
 ```
 
 If the result set is `[]`, The `all()` will return `[]`.
