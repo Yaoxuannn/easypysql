@@ -76,7 +76,7 @@ class Field(_Comparotor):
         return self._raw_data
 
     def fill(self, value):
-        self._raw_data = value
+        self._raw_data = self.python_type(value)
 
 
 class _SQLType(object):
