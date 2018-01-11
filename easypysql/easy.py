@@ -63,6 +63,9 @@ class Easy(object):
         sql = self._mapping_proxy(sqlmapping.CREATE, table=table)
         self.send(sql)
 
+    def select_db(self, database):
+        self.connector.select_db(database)
+
     @staticmethod
     def _mapping_proxy(action, table=None, obj=None):
         if action in [sqlmapping.CREATE, sqlmapping.SELECT]:
@@ -80,12 +83,10 @@ class Easy(object):
         return sql
 
     def commit(self):
-        assert self.connector.commit
         if self.connector.commit:
             self.connector.commit()
 
     def rollback(self):
-        assert self.connector.rollback
         if self.connector.rollback:
             self.connector.rollback()
 
