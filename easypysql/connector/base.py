@@ -46,12 +46,6 @@ class BaseConnector:
         """
         pass
 
-    def raw_execute(self, sql):
-        """
-        Execute SQL directly
-        """
-        self.cursor.execute(sql)
-
     def commit(self):
         self._conn.commit()
 
