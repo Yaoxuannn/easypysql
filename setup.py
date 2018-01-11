@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='easypysql',
-    version='0.1.2',
+    version='0.1.3',
     author='Justin13',
     author_email='justin13wyx@gmail.com',
     url='https://github.com/Justin13wyx/easypysql',
