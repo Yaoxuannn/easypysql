@@ -46,4 +46,4 @@ class SQLiteConnector(BaseConnector):
         """
         if self._conn:
             self._conn.close()
-        self._conn = self.connect(**self.attribute)
+        self._conn = self.connect()
