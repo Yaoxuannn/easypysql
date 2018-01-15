@@ -16,7 +16,6 @@ class SQLiteConnector(BaseConnector):
             "isolation_level": isolation_level,
             "uri": uri
         }
-        self.attribute.update(kwargs)
         self.connect()
 
     def connect(self):
